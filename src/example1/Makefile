@@ -23,6 +23,22 @@ OPENOCD_PROC_FILE=extra/stm32f4-openocd.cfg
 
 ###################################################
 
+# WINDOWS VS LINUX DEFINITIONS
+ifeq ($(OS),Windows_NT)
+   # WINDOWS
+   RM = erase /Q
+   FixPath = $(subst /,\,$1)
+   NUCLEO_COPY = copy_on_nucleo.bat
+else
+   # LINUX
+   ifeq ($(shell uname), Linux)
+      RM = rm -f
+      FixPath = $1
+      NUCLEO_COPY = copy_on_nucleo.sh
+   endif
+endif
+###################################################
+
 CC=arm-none-eabi-gcc
 OBJCOPY=arm-none-eabi-objcopy
 OBJDUMP=arm-none-eabi-objdump
@@ -78,15 +94,16 @@ $(PROJ_NAME).elf: $(SRCS)
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	$(OBJDUMP) -St $(PROJ_NAME).elf >$(PROJ_NAME).lst
 	$(SIZE) $(PROJ_NAME).elf
+	$(NUCLEO_COPY) $(PROJ_NAME).bin
 	
 clean:
-	find ./ -name '*~' | xargs rm -f	
-	rm -f *.o
-	rm -f $(PROJ_NAME).elf
-	rm -f $(PROJ_NAME).hex
-	rm -f $(PROJ_NAME).bin
-	rm -f $(PROJ_NAME).map
-	rm -f $(PROJ_NAME).lst
+#	find ./ -name '*~' | xargs rm -f	
+	$(RM) *.o
+	$(RM) $(PROJ_NAME).elf
+	$(RM) $(PROJ_NAME).hex
+	$(RM) $(PROJ_NAME).bin
+	$(RM) $(PROJ_NAME).map
+	$(RM) $(PROJ_NAME).lst
 
 cleanall: clean
 	$(MAKE) -C $(STD_PERIPH_LIB) clean
