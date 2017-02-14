@@ -50,7 +50,7 @@ int main(void)
   /* Blink the LED */   
   while (1)
   {
-  	ms_delay(100);
+  	ms_delay(10);
   	toggle_bit(5,GPIOA_BASE,GPIO_ODR);
 
   }
