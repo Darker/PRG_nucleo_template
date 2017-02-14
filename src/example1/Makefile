@@ -34,7 +34,7 @@ else
    ifeq ($(shell uname), Linux)
       RM = rm -f
       FixPath = $1
-      NUCLEO_COPY = copy_on_nucleo.sh
+      NUCLEO_COPY = ./copy_on_nucleo.sh
    endif
 endif
 ###################################################
